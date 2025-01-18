@@ -1,5 +1,7 @@
+import os
 import requests
 import traceback
+from dotenv import load_dotenv
 
 class SlackNotifier:
     """
@@ -7,20 +9,19 @@ class SlackNotifier:
     This class provides methods to send success messages and error notifications,
     including exception details with tracebacks.
     """
-
-    WEBHOOK_URL = "https://hooks.slack.com/services/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"
-
-    def __init__(self, webhook_url: str = WEBHOOK_URL):
+    def __init__(self, env_path):
         """
         Initializes the SlackNotifier with a webhook URL.
         If no URL is provided, it uses the default webhook URL.
 
         Parameters:
         ----------
-        webhook_url : str, optional
-            The Slack webhook URL to send messages to (default is WEBHOOK_URL).
+        env_path : str
+            The path to the .env file.
         """
-        self.webhook_url = webhook_url
+        # Load environment variables from .env file
+        load_dotenv(env_path)
+        self.webhook_url = os.getenv('SLACK_WEBHOOK_URL')
 
     def send_success(self) -> dict:
         """
