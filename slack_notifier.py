@@ -3,85 +3,92 @@ import traceback
 
 class SlackNotifier:
     """
-    A Python library for sending Slack notifications, including standard and error messages,
-    with support for sending exception details.
+    A Python utility for sending notifications to Slack channels using a webhook URL.
+    This class provides methods to send success messages and error notifications,
+    including exception details with tracebacks.
     """
 
-    # Private Webhook URL
-    WEBHOOK_URL = "https://hooks.slack.com/services/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"
+    WEBHOOK_URL = "https://hooks.slack.com/services/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"
 
     def __init__(self, webhook_url: str = WEBHOOK_URL):
         """
-        Initializes the SlackNotifier with the provided or default webhook URL.
+        Initializes the SlackNotifier with a webhook URL.
+        If no URL is provided, it uses the default webhook URL.
+
         Parameters:
-        -----------
-        webhook_url : str
-            The Slack webhook URL to send messages to.
+        ----------
+        webhook_url : str, optional
+            The Slack webhook URL to send messages to (default is WEBHOOK_URL).
         """
         self.webhook_url = webhook_url
 
-    def send_message(self, message: str) -> dict:
+    def send_success(self) -> dict:
         """
-        Sends a standard message to the Slack channel.
-
-        Parameters:
-        -----------
-        message : str
-            The message to send to Slack.
+        Sends a success notification to the Slack channel.
+        This function posts a predefined success message to the configured webhook URL.
 
         Returns:
-        --------
+        -------
         dict
-            The response from the Slack API.
+            A dictionary containing the status of the notification.
+            If the Slack response text is "ok", the status will be "success".
+            Otherwise, it will be "failure" with the response text included.
+
+        Example Usage:
+        --------------
+        notifier = SlackNotifier()
+        notifier.send_success()
         """
-        payload = {"text": message}
+        success_message = "✅ The code completed successfully! 🚀"
+        payload = {"text": success_message}
         response = requests.post(self.webhook_url, json=payload)
-        return response.json()
 
-    def send_success(self, success_message: str) -> dict:
+        if response.text.strip().lower() == "ok":
+            return {"status": "success"}
+        else:
+            return {"status": "failure", "response": response.text}
+
+    def send_error(self, exception: Exception = None) -> dict:
         """
-        Sends a success notification to Slack.
+        Sends an error notification to the Slack channel.
+        If an exception is provided, it includes details about the exception,
+        including its type, message, and full traceback.
 
         Parameters:
-        -----------
-        success_message : str
-            The success message to send to Slack.
-
-        Returns:
-        --------
-        dict
-            The response from the Slack API.
-        """
-        success_payload = {"text": f":white_check_mark: {success_message}"}
-        response = requests.post(self.webhook_url, json=success_payload)
-        return response.json()
-
-    def send_error(self, error_message: str, exception: Exception = None) -> dict:
-        """
-        Sends an error notification to Slack, optionally including exception details.
-
-        Parameters:
-        -----------
-        error_message : str
-            The main error message to send to Slack.
+        ----------
         exception : Exception, optional
-            The exception object to include details from (default is None).
+            The exception object to include in the error notification (default is None).
 
         Returns:
-        --------
+        -------
         dict
-            The response from the Slack API.
-        """
-        detailed_message = f"*ERROR*: {error_message}"
+            A dictionary containing the status of the notification.
+            If the Slack response text is "ok", the status will be "success".
+            Otherwise, it will be "failure" with the response text included.
 
-        # If an exception is provided, include its details and traceback
+        Example Usage:
+        --------------
+        try:
+            # Simulated code that raises an exception
+            result = 10 / 0
+        except Exception as e:
+            notifier = SlackNotifier()
+            notifier.send_error(exception=e)
+        """
+        error_message = "An unexpected error occurred during execution."
+        detailed_message = f"❌ *An error occurred!* {error_message}"
+
         if exception:
-            detailed_message += f"\n*Exception*: `{type(exception).__name__}`"
+            detailed_message += f"\n\n*Exception*: `{type(exception).__name__}`"
             detailed_message += f"\n*Message*: `{exception}`"
             detailed_message += "\n*Traceback:* ```"
             detailed_message += "".join(traceback.format_tb(exception.__traceback__))
             detailed_message += "```"
 
-        error_payload = {"text": detailed_message}
-        response = requests.post(self.webhook_url, json=error_payload)
-        return response.json()
+        payload = {"text": detailed_message}
+        response = requests.post(self.webhook_url, json=payload)
+
+        if response.text.strip().lower() == "ok":
+            return {"status": "success"}
+        else:
+            return {"status": "failure", "response": response.text}
