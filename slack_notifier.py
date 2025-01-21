@@ -3,7 +3,7 @@ import requests
 import traceback
 from dotenv import load_dotenv
 
-class SlackNotifier:
+class Notifier:
     """
     A Python utility for sending notifications to Slack channels using a webhook URL.
     This class provides methods to send success messages and error notifications,
