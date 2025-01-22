@@ -40,7 +40,7 @@ class Notifier:
         notifier = SlackNotifier()
         notifier.send_success()
         """
-        success_message = "✅ The code completed successfully! 🚀"
+        success_message = f"✅ The code completed successfully! 🚀"
         payload = {"text": success_message}
         response = requests.post(self.webhook_url, json=payload)
 
