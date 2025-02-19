@@ -8,6 +8,10 @@ class Notifier:
     A Python utility for sending notifications to Slack channels using a webhook URL.
     This class provides methods to send success messages and error notifications,
     including exception details with tracebacks.
+
+    Last modified: 2025-02-19 / Seongjun Lee / Modified the send_success method to allow for a custom message.
+    Created on: 2025-01-19
+    Created by: Seongjun Lee
     """
     def __init__(self, env_path):
         """
@@ -23,7 +27,7 @@ class Notifier:
         load_dotenv(env_path)
         self.webhook_url = os.getenv('SLACK_WEBHOOK_URL')
 
-    def send_success(self) -> dict:
+    def send_success(self, message: str = None) -> dict:
         """
         Sends a success notification to the Slack channel.
         This function posts a predefined success message to the configured webhook URL.
@@ -37,10 +41,19 @@ class Notifier:
 
         Example Usage:
         --------------
-        notifier = SlackNotifier()
-        notifier.send_success()
+        base_FP = '/YOUR/PATH/TO/BASE/FOLDER'
+        import Slack.slack_notifier as Slack
+        env_path = os.path.join(base_FP, '.env')
+        notipy = Slack.Notifier(env_path)
+        notipy.send_success()
+
+        If you want to send a custom message, you can do the following:
+        notipy.send_success("The code completed successfully!")
         """
-        success_message = f"✅ The code completed successfully! 🚀"
+        if message:
+            success_message = message
+        else:
+            success_message = "✅ The code completed successfully! 🚀"
         payload = {"text": success_message}
         response = requests.post(self.webhook_url, json=payload)
 
