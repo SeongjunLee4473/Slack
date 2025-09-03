@@ -3,9 +3,6 @@
     <img style="width:100%; display: block;"
       src="https://d34u8crftukxnk.cloudfront.net/slackpress/prod/sites/6/slack-logo-slide.png"
       alt="Slack"/>
-    <div align="right">
-      Credit: Slack
-    </div>
   </div>
 </div>
 
