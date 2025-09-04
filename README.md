@@ -22,7 +22,7 @@ A simple Python utility for sending notifications to a Slack channel using an In
 * 🧩 **Easy Integration**: Simple to drop into any Python project.
 * ✅ **Success Notifications**: Send a confirmation message when a script or task completes successfully. You can use a default message or provide a custom one.
 * 🐛 **Detailed Error Reporting**: Automatically capture and send detailed error information, including the exception type, message, and a full traceback, making debugging easier.
-* 🔒 **Secure Configuration**: Keeps your Slack webhook URL secure by loading it from a .env file.
+* 🔒 **Secure Configuration**: Keeps your Slack webhook URL secure by loading it from a `.env` file.
 
 ---
 
